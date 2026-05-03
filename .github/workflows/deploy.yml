@@ -32,3 +32,4 @@ jobs:
             **/node_modules/**
             **/.vscode/**
             **/scripts/**
+            **/pages/post_format.html
