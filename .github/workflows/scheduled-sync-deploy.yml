@@ -38,6 +38,9 @@ jobs:
       - name: Build sitemap
         run: node scripts/build-sitemap.js
 
+      - name: Build index.json
+        run: node scripts/build-pages-index.js
+
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
