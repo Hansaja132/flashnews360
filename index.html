@@ -3,10 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FlashNews360</title>
+    <title>FlashNews360 | Daily News Updates</title>
     <meta
       name="description"
-      content="FlashNews360 - curated updates and the latest posts from the pages folder."
+      content="FlashNews360 publishes daily news updates. Discover the latest headlines and summaries from our automated news feed."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#f6f0e8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FlashNews360" />
+    <meta property="og:title" content="FlashNews360 | Daily News Updates" />
+    <meta
+      property="og:description"
+      content="FlashNews360 publishes daily news updates. Discover the latest headlines and summaries from our automated news feed."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FlashNews360 | Daily News Updates" />
+    <meta
+      name="twitter:description"
+      content="FlashNews360 publishes daily news updates. Discover the latest headlines and summaries from our automated news feed."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +29,29 @@
       href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Space+Grotesk:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="canonical" href="/" />
     <link rel="stylesheet" href="styles/blog.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "NewsMediaOrganization",
+        "name": "FlashNews360",
+        "url": "https://example.com",
+        "publishingPrinciples": "https://example.com/about"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "FlashNews360",
+        "url": "https://example.com",
+        "publisher": {
+          "@type": "NewsMediaOrganization",
+          "name": "FlashNews360"
+        }
+      }
+    </script>
   </head>
   <body>
     <header class="top-bar">
