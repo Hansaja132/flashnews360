@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlashNews360</title>
+    <meta
+      name="description"
+      content="FlashNews360 - curated updates and the latest posts from the pages folder."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/blog.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="container">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <h1>FlashNews360</h1>
+        </div>
+        <div class="top-actions">
+          <span>Live feed from your pages folder</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-card" id="hero-card"></div>
+      <div class="hero-aside">
+        <div class="hero-aside-card">
+          <h2>Daily Pulse</h2>
+          <p>
+            Publish new HTML files inside the pages folder and refresh to see them
+            here.
+          </p>
+        </div>
+        <div class="hero-aside-card">
+          <h2>Editor Notes</h2>
+          <p>
+            Add meta description and og:image tags to your page for better
+            previews.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Latest Posts</h2>
+        <p id="posts-status" class="status">Waiting for posts...</p>
+      </div>
+      <div class="posts-grid" id="posts-grid"></div>
+    </section>
+
+    <footer class="footer">
+      <p>FlashNews360 - handcrafted layout inspired by Newsim.</p>
+    </footer>
+
+    <script src="scripts/blog.js"></script>
+  </body>
+</html>
