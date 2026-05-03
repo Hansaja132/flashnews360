@@ -26,7 +26,7 @@ jobs:
           FTP_PASS=${{ secrets.FTP_PASSWORD }}
           FTP_PORT=${{ secrets.FTP_PORT }}
           FTP_SECURE=${{ secrets.FTP_SECURE }}
-          FTP_REMOTE_PAGES_DIR=${{ secrets.FTP_REMOTE_PAGES_DIR }}
+          FTP_REMOTE_PAGES_DIR=${{ secrets.FTP_REMOTE_DIR }}
           EOF
 
       - name: Install FTP dependency
