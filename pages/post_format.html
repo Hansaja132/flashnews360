@@ -5,36 +5,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{1.title}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Space+Grotesk:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../styles/blog.css" />
 </head>
 <script>(function(s){s.dataset.zone='10797249',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <body>
 
+  <header class="top-bar">
+    <div class="container">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <h1>FlashNews360</h1>
+      </div>
+      <div class="top-actions">
+        <a class="post-back" href="../index.html">Back to home</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="post-layout">
   <article class="news-post">
     <header>
       <h1>{{1.title}}</h1>
-      <p>
-        <strong>Published:</strong> {{1.rssFields.pubdate}}<br>
-        <strong>Source:</strong> <a href="{{1.rssFields.link}}" target="_blank" rel="noopener noreferrer">{{1.rssFields.title}}</a>
-      </p>
+      <div class="post-meta">
+        <span><strong>Published:</strong> {{1.rssFields.pubdate}}</span>
+        <span>
+          <strong>Source:</strong>
+          <a href="{{1.rssFields.link}}" target="_blank" rel="noopener noreferrer">{{1.rssFields.title}}</a>
+        </span>
+      </div>
     </header>
 
     
-    <figure>
-      <img src="{{1.image.url}}" alt="{{1.title}}" style="max-width:100%;height:auto;" />
+    <figure class="post-figure">
+      <img src="{{1.image.url}}" alt="{{1.title}}" />
     </figure>
    
 
-    <section class="summary">
+    <section class="post-section">
       <h2>Summary</h2>
       <p>{{1.summary}}</p>
     </section>
 
-    <section class="content">
+    <section class="post-section">
       <h2>Details</h2>
       <p>{{1.description}}</p>
     </section>
 
-    <section class="source-note">
+    <section class="post-section source-note">
       <p>
         This article was created from publicly available news feed data and organized for easier reading.
         Original source: <a href="{{1.url}}" target="_blank" rel="nofollow noopener noreferrer">Read full article</a>.
@@ -55,29 +78,12 @@
     <div class="ad-space ad-bottom">
       <!-- Insert ad code here -->
     </div>
-<a href="https://omg10.com/4/10797248" class="btn-primary" target="_blank" rel="noopener noreferrer">
-  Click Here
-</a>
-
-<style>
-.btn-primary {
-  display: inline-block;
-  padding: 12px 24px;
-  background: #2563eb;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: 0.3s ease;
-}
-
-.btn-primary:hover {
-  background: #1d4ed8;
-  transform: translateY(-2px);
-}
-</style>
+    <a href="https://omg10.com/4/10797248" class="btn-primary" target="_blank" rel="noopener noreferrer">
+      Click Here
+    </a>
   </article>
+
+  </main>
 
 </body>
 </html>

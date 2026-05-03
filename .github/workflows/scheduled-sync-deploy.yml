@@ -1,0 +1,55 @@
+name: Scheduled Sync and Deploy
+
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Create .env for scripts
+        run: |
+          cat <<EOF > .env
+          BASE_URL=${{ secrets.BASE_URL }}
+          FTP_HOST=${{ secrets.FTP_HOST }}
+          FTP_USER=${{ secrets.FTP_USERNAME }}
+          FTP_PASS=${{ secrets.FTP_PASSWORD }}
+          FTP_PORT=${{ secrets.FTP_PORT }}
+          FTP_SECURE=${{ secrets.FTP_SECURE }}
+          FTP_REMOTE_PAGES_DIR=${{ secrets.FTP_REMOTE_PAGES_DIR }}
+          EOF
+
+      - name: Install FTP dependency
+        run: npm install basic-ftp
+
+      - name: Download pages from FTP
+        run: node scripts/ftp-sync-pages.js
+
+      - name: Build sitemap
+        run: node scripts/build-sitemap.js
+
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/node_modules/**
+            **/.vscode/**
+            **/scripts/**
+            **/pages/post_format.html

@@ -266,12 +266,126 @@ a {
     text-align: center;
 }
 
+.post-layout {
+    max-width: var(--max-width);
+    margin: 32px auto 40px;
+    padding: 0 24px;
+}
+
+.news-post {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: grid;
+    gap: 20px;
+}
+
+.news-post h1 {
+    font-size: 34px;
+}
+
+.post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.post-meta a {
+    color: var(--accent-2);
+    font-weight: 600;
+}
+
+.post-figure {
+    margin: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f1b482, #f4d6b9, #a9d2dc);
+}
+
+.post-figure img {
+    width: 100%;
+    display: block;
+    height: auto;
+}
+
+.post-section {
+    display: grid;
+    gap: 10px;
+    color: var(--ink);
+    line-height: 1.7;
+}
+
+.post-section p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.source-note {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.source-note a {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.ad-space {
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.btn-primary {
+    align-self: start;
+    display: inline-flex;
+    padding: 12px 24px;
+    background: var(--accent-2);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 999px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: #15546b;
+    transform: translateY(-2px);
+}
+
+.post-back {
+    color: var(--accent-2);
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(30, 106, 138, 0.2);
+    background: rgba(30, 106, 138, 0.08);
+}
+
+.post-back:hover {
+    background: rgba(30, 106, 138, 0.16);
+}
+
 @media (max-width: 900px) {
     .hero {
         grid-template-columns: 1fr;
     }
 
     .hero-title {
+        font-size: 28px;
+    }
+
+    .news-post h1 {
         font-size: 28px;
     }
 }
