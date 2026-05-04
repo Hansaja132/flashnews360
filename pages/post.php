@@ -1,10 +1,55 @@
+<?php
+require __DIR__ . '/../db.php';
+
+$postId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+if ($postId <= 0) {
+    http_response_code(400);
+    exit('Invalid post id.');
+}
+
+$stmt = $conn->prepare('SELECT * FROM posts WHERE id = ?');
+$stmt->execute([$postId]);
+$post = $stmt->fetch();
+
+if (!$post) {
+    http_response_code(404);
+    exit('Post not found.');
+}
+
+$metaTags = $post['meta_tags'] ?? '';
+$title = $post['title'] ?? '';
+$summary = $post['summary'] ?? '';
+$description = $post['description'] ?? '';
+$imageUrl = $post['image_url'] ?? '';
+$pubDate = $post['pub_date'] ?? '';
+$sourceLink = $post['source_link'] ?? '';
+$sourceName = $post['source_name'] ?? '';
+$pageUrl = $post['page_url'] ?? '';
+
+function escape_html(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
+function escape_url(string $value): string
+{
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
+$metaTagsSafe = strip_tags($metaTags, '<meta><link>');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="description" content="Nigeria has summoned South Africa’s envoy after a wave of anti-migrant protests, some turning violent, targeted its nationals in South Africa.">
+<?php echo $metaTagsSafe; ?>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nigeria summons South African envoy over attacks on its nationals</title>
+  <title><?php echo escape_html($title); ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -23,7 +68,7 @@
         <h1>FlashNews360</h1>
       </div>
       <div class="top-actions">
-        <a class="post-back" href="../index.html">Back to home</a>
+        <a class="post-back" href="../index.php">Back to home</a>
       </div>
     </div>
   </header>
@@ -31,36 +76,36 @@
   <main class="post-layout">
   <article class="news-post">
     <header>
-      <h1>Nigeria summons South African envoy over attacks on its nationals</h1>
+      <h1><?php echo escape_html($title); ?></h1>
       <div class="post-meta">
-        <span><strong>Published:</strong> Sun, 03 May 2026 10:16:01 GMT</span>
+        <span><strong>Published:</strong> <?php echo escape_html($pubDate); ?></span>
         <span>
           <strong>Source:</strong>
-          <a href="https://www.bbc.com/news/articles/c78q6e98878o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Nigeria summons South African envoy over attacks on its nationals</a>
+          <a href="<?php echo escape_url($sourceLink); ?>" target="_blank" rel="noopener noreferrer"><?php echo escape_html($sourceName); ?></a>
         </span>
       </div>
     </header>
 
     
     <figure class="post-figure">
-      <img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/5d7b/live/aa73d6a0-46d6-11f1-a1bb-13ca62b3ded8.jpg" alt="Nigeria summons South African envoy over attacks on its nationals" />
+      <img src="<?php echo escape_url($imageUrl); ?>" alt="<?php echo escape_html($title); ?>" />
     </figure>
    
 
     <section class="post-section">
       <h2>Summary</h2>
-      <p>There has been a wave of anti-migrant protests in South Africa, some of which have turned violent.</p>
+      <p><?php echo escape_html($summary); ?></p>
     </section>
 
     <section class="post-section">
       <h2>Details</h2>
-      <p>There has been a wave of anti-migrant protests in South Africa, some of which have turned violent.</p>
+      <p><?php echo escape_html($description); ?></p>
     </section>
 
     <section class="post-section source-note">
       <p>
         This article was created from publicly available news feed data and organized for easier reading.
-        Original source: <a href="https://www.bbc.com/news/articles/c78q6e98878o?at_medium=RSS&at_campaign=rss" target="_blank" rel="nofollow noopener noreferrer">Read full article</a>.
+        Original source: <a href="<?php echo escape_url($pageUrl); ?>" target="_blank" rel="nofollow noopener noreferrer">Read full article</a>.
       </p>
     </section>
 

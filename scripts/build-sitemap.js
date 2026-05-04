@@ -1,8 +1,10 @@
 const fs = require("fs");
 const path = require("path");
+const { Client } = require("pg");
 
 const rootDir = path.join(__dirname, "..");
 const envFile = path.join(rootDir, ".env");
+const sitemapFile = path.join(rootDir, "sitemap.xml");
 
 const readEnvFile = (filePath) => {
   if (!fs.existsSync(filePath)) {
@@ -37,47 +39,88 @@ const readEnvFile = (filePath) => {
 
 const env = readEnvFile(envFile);
 const baseUrl = env.BASE_URL;
+const postPath = env.POST_PATH || "/pages/post.php?id=";
+
 if (!baseUrl || !/^https?:\/\//.test(baseUrl)) {
   console.error("BASE_URL is required in .env, e.g. https://flashnews360.gt.tc");
   process.exit(1);
 }
-const pagesDir = path.join(rootDir, "pages");
-const pagesIndex = path.join(pagesDir, "index.json");
-const sitemapFile = path.join(rootDir, "sitemap.xml");
 
-const pages = JSON.parse(fs.readFileSync(pagesIndex, "utf8"));
+const dbHost = env.DB_HOST || "127.0.0.1";
+const dbPort = env.DB_PORT ? Number(env.DB_PORT) : 5432;
+const dbName = env.DB_NAME;
+const dbUser = env.DB_USER;
+const dbPass = env.DB_PASS || "";
+const dbSsl = env.DB_SSL || "require";
+
+if (!dbName || !dbUser) {
+  console.error("DB_NAME and DB_USER are required in .env");
+  process.exit(1);
+}
+
 const normalizedBase = baseUrl.replace(/\/$/, "");
+const normalizedPostPath = postPath.startsWith("/") ? postPath : `/${postPath}`;
 
-const urls = ["/"]
-  .concat(pages.map((page) => `/pages/${page.replace(/^pages\//, "")}`))
-  .map((entry) => `${normalizedBase}${entry}`);
-
-const getLastMod = (relativePath) => {
-  const filePath = path.join(rootDir, relativePath);
-  if (!fs.existsSync(filePath)) {
-    return null;
+const formatLastMod = (value) => {
+  if (!value) {
+    return "";
   }
-  return new Date(fs.statSync(filePath).mtime).toISOString();
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return date.toISOString();
 };
 
-const entries = urls
-  .map((url) => {
-    const pathName = url.replace(normalizedBase, "");
-    const rel = pathName === "/" ? "index.html" : pathName.replace(/^\//, "");
-    const lastmod = getLastMod(rel);
+const main = async () => {
+  const sslEnabled = dbSsl !== "disable" && dbSsl !== "false" && dbSsl !== "0";
+  const client = new Client({
+    host: dbHost,
+    port: dbPort,
+    user: dbUser,
+    password: dbPass,
+    database: dbName,
+    ssl: sslEnabled ? { rejectUnauthorized: false } : false,
+  });
 
-    return [
-      "  <url>",
-      `    <loc>${url}</loc>`,
-      lastmod ? `    <lastmod>${lastmod}</lastmod>` : "",
-      "  </url>",
-    ]
-      .filter(Boolean)
+  await client.connect();
+
+  try {
+    const result = await client.query("SELECT id, pub_date FROM posts ORDER BY id DESC");
+    const rows = result.rows || [];
+    const urls = ["/"]
+      .concat(
+        rows.map((row) => {
+          return `${normalizedPostPath}${row.id}`;
+        })
+      )
+      .map((entry) => `${normalizedBase}${entry}`);
+
+    const entries = urls
+      .map((url, index) => {
+        const lastmod = index === 0 ? "" : formatLastMod(rows[index - 1]?.pub_date);
+
+        return [
+          "  <url>",
+          `    <loc>${url}</loc>`,
+          lastmod ? `    <lastmod>${lastmod}</lastmod>` : "",
+          "  </url>",
+        ]
+          .filter(Boolean)
+          .join("\n");
+      })
       .join("\n");
-  })
-  .join("\n");
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
 
-fs.writeFileSync(sitemapFile, sitemap);
-console.log(`Sitemap written to ${sitemapFile}`);
+    fs.writeFileSync(sitemapFile, sitemap);
+    console.log(`Sitemap written to ${sitemapFile}`);
+  } finally {
+    await client.end();
+  }
+};
+
+main().catch((err) => {
+  console.error(err.message || err);
+  process.exit(1);
+});

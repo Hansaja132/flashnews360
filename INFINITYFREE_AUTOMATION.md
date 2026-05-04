@@ -1,38 +1,24 @@
-# InfinityFree Automation (index.json + sitemap.xml)
+# InfinityFree Automation (database-backed sitemap.xml)
 
-These steps automate `pages/index.json` and `sitemap.xml` updates on InfinityFree cPanel by running the Node scripts after new posts are uploaded.
+Posts are stored in MySQL, so `pages/index.json` and FTP sync are no longer used.
+The sitemap is generated from the database using the Node script.
 
-## Option A: Use Make.com (no server-side runtime needed)
+## Option A: Run sitemap generation offsite
 
-This is the simplest and most reliable on InfinityFree (static hosting).
-
-1. In your Make.com scenario, add a **Run JavaScript** module (or any module that can transform data).
-2. When your scenario uploads a new post file to `/pages/`, also:
-   - Download `/pages/index.json`.
-   - Parse it as JSON.
-   - Append the new filename (example: `post_2026-05-03T15_10_00.000+05_30.html`).
-   - Sort the array if you want chronological order.
-   - Upload the updated JSON back to `/pages/index.json`.
-3. Also rebuild `sitemap.xml` in Make.com:
-   - Download `/pages/index.json`.
-   - Build a list of URLs based on your `BASE_URL`.
-   - Write a new `sitemap.xml` string.
-   - Upload it to `/sitemap.xml`.
-
-This replaces the Node scripts with Make.com logic and works on static hosting.
-
-## Option B: Use a remote runner (GitHub Actions or another VPS)
-
-InfinityFree does not allow running Node scripts on each request, so run them elsewhere and upload the results.
+InfinityFree does not allow Node on the server, so generate `sitemap.xml` elsewhere and upload it.
 
 1. Put the project in a GitHub repo.
 2. Create a GitHub Action that runs on a schedule or on push:
-   - `node scripts/build-pages-index.js`
    - `node scripts/build-sitemap.js`
-3. Upload the generated `pages/index.json` and `sitemap.xml` to InfinityFree using FTP (actions like `SamKirkland/FTP-Deploy-Action`).
-4. Trigger the workflow when new posts are added (from Make.com or any webhook).
+3. Upload the generated `sitemap.xml` to InfinityFree (FTP or your preferred deploy step).
+
+## Option B: Use Make.com
+
+1. In your Make.com scenario, add a **Run JavaScript** module.
+2. Set `BASE_URL` and DB credentials from your Make.com secrets.
+3. Run `node scripts/build-sitemap.js` in the module and upload `sitemap.xml`.
 
 ## Notes
 
-- Running these scripts on every page load is not possible on InfinityFree because it is static hosting (no Node runtime per request).
-- The most reliable method is to update the JSON and sitemap at upload time.
+- `scripts/build-sitemap.js` reads DB credentials from `.env`.
+- Posts are resolved to `POST_PATH` (default: `/pages/post.php?id=`).

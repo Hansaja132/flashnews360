@@ -18,14 +18,16 @@ jobs:
           # Base site URL used for sitemap and robots
           BASE_URL=${{ secrets.BASE_URL }}
 
-          # FTP credentials for scripts/ftp-sync-pages.js
-          FTP_HOST=${{ secrets.FTP_HOST }}
-          FTP_USER=${{ secrets.FTP_USERNAME }}
-          FTP_PASS=${{ secrets.FTP_PASSWORD }}
-          FTP_PORT=${{ secrets.FTP_PORT }}
-          FTP_SECURE=${{ secrets.FTP_SECURE }}
-          # Remote directory that contains your site pages folder
-          FTP_REMOTE_PAGES_DIR=${{ secrets.FTP_REMOTE_PAGES_DIR }}
+          # Optional path prefix for post URLs in the sitemap
+          POST_PATH=${{ secrets.POST_PATH }}
+
+          # Database connection for post.php (Supabase/PostgreSQL)
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASS=${{ secrets.DB_PASS }}
+          DB_SSL=${{ secrets.DB_SSL }}
           EOF
 
       - name: Upload via FTP

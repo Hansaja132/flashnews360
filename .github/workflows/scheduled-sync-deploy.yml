@@ -17,29 +17,30 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Create .env for scripts
+      - name: Create .env from secrets
         run: |
           cat <<EOF > .env
+          # Base site URL used for sitemap and robots
           BASE_URL=${{ secrets.BASE_URL }}
-          FTP_HOST=${{ secrets.FTP_HOST }}
-          FTP_USER=${{ secrets.FTP_USERNAME }}
-          FTP_PASS=${{ secrets.FTP_PASSWORD }}
-          FTP_PORT=${{ secrets.FTP_PORT }}
-          FTP_SECURE=${{ secrets.FTP_SECURE }}
-          FTP_REMOTE_PAGES_DIR=${{ secrets.FTP_REMOTE_DIR }}
+
+          # Optional path prefix for post URLs in the sitemap
+          POST_PATH=${{ secrets.POST_PATH }}
+
+          # Database connection for post.php (Supabase/PostgreSQL)
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASS=${{ secrets.DB_PASS }}
+          DB_SSL=${{ secrets.DB_SSL }}
           EOF
 
-      - name: Install FTP dependency
-        run: npm install basic-ftp
-
-      - name: Download pages from FTP
-        run: node scripts/ftp-sync-pages.js
+      - name: Install sitemap dependency
+        run: npm install pg
 
       - name: Build sitemap
         run: node scripts/build-sitemap.js
 
-      - name: Build index.json
-        run: node scripts/build-pages-index.js
 
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
