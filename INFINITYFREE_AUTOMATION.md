@@ -22,3 +22,17 @@ InfinityFree does not allow Node on the server, so generate `sitemap.xml` elsewh
 
 - `scripts/build-sitemap.js` reads DB credentials from `.env`.
 - Posts are resolved to `POST_PATH` (default: `/pages/post.php?id=`).
+
+## Supabase Pooler Settings
+
+For local dev and InfinityFree, use the Supabase connection pooler host so IPv4 works reliably.
+
+1. Supabase Dashboard -> Settings -> Database.
+2. In the Connection info card, switch the dropdown to Connection Pooling.
+3. Copy Host and Port (usually 6543).
+4. Update `.env`:
+   - `DB_HOST=<pooler host>`
+   - `DB_PORT=<pooler port>`
+   - `DB_USER=<pooler user>`
+
+The pooler user often looks like `postgres.<project_ref>` instead of plain `postgres`.

@@ -1,6 +1,12 @@
 const fs = require("fs");
 const path = require("path");
+const net = require("net");
+const dns = require("dns");
 const { Client } = require("pg");
+
+if (typeof dns.setDefaultResultOrder === "function") {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 const rootDir = path.join(__dirname, "..");
 const envFile = path.join(rootDir, ".env");
@@ -72,10 +78,33 @@ const formatLastMod = (value) => {
   return date.toISOString();
 };
 
+const resolveIpv4Host = async (host) => {
+  if (!host || net.isIP(host) !== 0) {
+    return host;
+  }
+
+  try {
+    const ipv4Records = await dns.promises.resolve4(host);
+    if (Array.isArray(ipv4Records) && ipv4Records.length > 0) {
+      return ipv4Records[0];
+    }
+  } catch (error) {
+    // Fall back to lookup below.
+  }
+
+  try {
+    const result = await dns.promises.lookup(host, { family: 4 });
+    return result.address || host;
+  } catch (error) {
+    return host;
+  }
+};
+
 const main = async () => {
   const sslEnabled = dbSsl !== "disable" && dbSsl !== "false" && dbSsl !== "0";
+  const resolvedHost = await resolveIpv4Host(dbHost);
   const client = new Client({
-    host: dbHost,
+    host: resolvedHost,
     port: dbPort,
     user: dbUser,
     password: dbPass,
